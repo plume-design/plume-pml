@@ -44,8 +44,15 @@ struct __inet_gretap
     };
 
     char            in_ifparent[C_IFNAME_LEN];      /* Parent interface */
-    osn_ip_addr_t   in_local_addr;                  /* Local IPv4 address */
-    osn_ip_addr_t   in_remote_addr;                 /* Remote IPv4 address */
+    int             family;                         /* Family */
+    union {
+        osn_ip_addr_t   in_local_addr;              /* Local IPv4 address */
+        osn_ip6_addr_t  in6_local_addr;             /* Local IPv6 address */
+    };
+    union {
+        osn_ip_addr_t   in_remote_addr;             /* Remote IPv4 address */
+        osn_ip6_addr_t  in6_remote_addr;            /* Remote IPv6 address */
+    };
 
 };
 
@@ -57,6 +64,13 @@ extern bool inet_gretap_ip4tunnel_set(
         const char *parent,
         osn_ip_addr_t laddr,
         osn_ip_addr_t raddr,
+        osn_mac_addr_t rmac);
+
+extern bool inet_gretap_ip6tunnel_set(
+        inet_t *super,
+        const char *parent,
+        osn_ip6_addr_t laddr,
+        osn_ip6_addr_t raddr,
         osn_mac_addr_t rmac);
 
 extern bool inet_gretap_service_commit(inet_base_t *super, enum inet_base_services srv, bool enable);
